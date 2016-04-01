@@ -1,4 +1,4 @@
 # SRSI
-## Spigot RAMDISK Server Installer
+Spigot RAMDISK Server Installer
 
 ## Installation
