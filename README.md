@@ -6,16 +6,17 @@ A simple tool to install the Spigot Server on Debian/Ubuntu for server administr
 
  - Compatible with Debian/Ubuntu
  - Root privileges
+ - Active Internet Connection
 
 ## Provides
 
  - Minecraft Server *(Spigot Server)*
  - Spigot BuildTools.jar *(to build the Spigot Server)*
- - Sudo
  - Oracle Java 8
+ - Git *(GitHub Debian/Ubuntu)*
  - tar *(if downloaded form source on netinst)*
  - screen
- - Git *(GitHub Debian/Ubuntu)*
+ - Sudo *(You should have this to control your server and other aspects of linux from your user account)*
 
 ## Installation
 
