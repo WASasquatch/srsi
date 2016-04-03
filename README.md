@@ -3,7 +3,7 @@ Spigot RAMDISK Server Installer on Debian 8 Jessie
 
 ## Requirements
 
- - Should be compatible with Debian/Ubuntu
+ - Compatible with Debian/Ubuntu
  - Root privileges
 
 ## Provides
