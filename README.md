@@ -1,5 +1,5 @@
 ![alt tag](http://s30.postimg.org/jrx7vy2kh/SRSILogo.png)
-# SRSI
+# SRSI - Spigot RAMDISK Server Installer
 ### Spigot RAMDISK Server Installer on Debian 8 Jessie
 A simple tool to install the Spigot Server on Debian/Ubuntu for server administrators.
 
