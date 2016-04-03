@@ -44,15 +44,15 @@ check_java() {
   if ! hash java 2>/dev/null; then
     return 1
   else 
-	return 0
+    return 0
   fi
 }
 
 check_ramdisk() {
   if ! df -h | grep -q $MCPATH ; then
-	return 1
+    return 1
   else
-	return 0
+    return 0
   fi
 }
 
@@ -211,17 +211,17 @@ case "$1" in
   cjava)
     if check_java ; then
       echo -e "${BOL}Oracle Java 7${NOR} or higher is required to run Minecraft Server. (Oracle Java 8 Recommended)\n"
-	else
-	  echo -e "${GRE}Java is installed!${NOR}"
-	fi
-	;;
+    else
+      echo -e "${GRE}Java is installed!${NOR}"
+    fi
+    ;;
   cramdisk)
     if check_ramdisk ; then
-	  echo -e "${BOL}${RED}RAMDISK is offline!${NOR}\n"
-	else
-	  echo -e "${GRE}RAMDISK is online.${NOR}"
-	fi
-	;;
+      echo -e "${BOL}${RED}RAMDISK is offline!${NOR}\n"
+    else
+      echo -e "${GRE}RAMDISK is online.${NOR}"
+    fi
+    ;;
   start)
     check_java
     mc_start
