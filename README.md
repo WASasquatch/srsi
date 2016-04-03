@@ -8,12 +8,13 @@ Spigot RAMDISK Server Installer on Debian 8 Jessie
 
 ## Provides
 
- - Minecraft Server (Spigot Server)
+ - Minecraft Server *(Spigot Server)*
+ - Spigot BuildTools.jar *(to build the Spigot Server)*
  - Sudo
  - Oracle Java 8
- - tar (if downloaded form source on netinst)
+ - tar *(if downloaded form source on netinst)*
  - screen
- - Git (GitHub Debian/Ubuntu)
+ - Git *(GitHub Debian/Ubuntu)*
 
 ## Installation
 
