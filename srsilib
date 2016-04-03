@@ -1,0 +1,139 @@
+###################################
+#     ___ ___ ___ ___  ___ _____   ___    _   __  __ ___ ___ ___ _  __     
+#    / __| _ \_ _/ __|/ _ \_   _| | _ \  /_\ |  \/  |   \_ _/ __| |/ /     
+#    \__ \  _/| | (_ | (_) || |   |   / / _ \| |\/| | |) | |\__ \ ' <      
+#    |___/_|_|___\___|\___/ |_|   |_|_\/_/ \_\_|__|_|___/___|___/_|\_\ ___ 
+#    / __| __| _ \ \ / / __| _ \ |_ _| \| / __|_   _/_\ | |  | |  | __| _ \
+#    \__ \ _||   /\ V /| _||   /  | || .` \__ \ | |/ _ \| |__| |__| _||   /
+#    |___/___|_|_\ \_/ |___|_|_\ |___|_|\_|___/ |_/_/ \_\____|____|___|_|_\
+#                                                                      
+#
+# SPIGOT RAMDISK SERVER INSTALLER
+# BY JORDAN THOMPSON (WASASQUATCH)
+# v0.1 b1 4/01/2016
+# -----------------------------------
+#  This is is lib file for Spigot Ramdisk Server Installer
+
+# GLOBALS
+auser=$('whoami')
+aid=$('id -u ${auser}')
+totalram=$(awk '/MemTotal/{print $2}' /proc/meminfo |while read KB dummy;do echo $((KB/1024));done)
+adir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# COLOR CODES
+NOR="\e[0m"
+WHI="\e[97"
+PMT="\e[94m"
+BOL="\e[1m"
+GRE="\e[32m"
+RED="\e[31m"
+YEL="\e[93m"
+
+srun() {
+  if [ ! "$2" = "ticker" ] ; then
+   while true;do echo -n .;sleep 1;done &
+      eval "$1"
+    kill $!; trap 'kill $!' SIGTERM
+  else
+    while true;do for s in / - \\ \|; do printf "\r$s";sleep .1;done;done &
+      eval "$1"
+    kill $!; trap 'kill $!' SIGTERM
+  fi
+}
+
+confirm () {
+  read -r -p "${1:-Are you sure? [y/N]} " response
+  case $response in
+      [yY][eE][sS]|[yY]) 
+      true
+      ;;
+    *)
+      false
+      ;;
+  esac
+}
+
+password_prompt() {
+  echo -n "Enter new password:"
+  read -s passone
+  sleep .25
+  echo -e "\n"
+  echo -n "Repeat new password:"
+  read -s passtwo
+  echo -e "\n"
+  if [[ ! "${passone}" = "${passtwo}" ]] ; then
+    echo -e "${RED}Password Mismatch!${NOR} Please try again."
+    password_prompt
+  else
+    echo -e "\n"
+    return 0
+  fi
+}
+
+ramdisk_memory() {
+  echo -e "${YEL}Enter the size of the RAMDISK in megabytes:${NOR}"
+  read -r -p "${ramd:-RAMDISK Size:} " ramsize
+  if (( ramsize > totalram )) ; then
+    echo -e "${RED}The ram size you have selected is too large!${NOR}\nTotal System Memory: ${BOL}${totalram}mb${NOR}"
+    ramdisk_memory $1
+  fi
+  echo -e "You selected a size of ${BOL}${ramsize}${NOR} megabytes."
+  if confirm ; then
+    setup_ramdisk $ramsize $1
+  else
+    ramdisk_memory
+  fi
+}
+
+setup_ramdisk() {
+  echo -e "\n${YEL}Setting up RAMDISK...${NOR}\n"
+  sleep 1
+  if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
+    (echo "tmpfs  /home/${2}/ramdisk tmpfs  defaults,size=${1}m    0       0" | tee --append /etc/fstab) &>/tmp/srsi/srsi.logs
+  fi
+  if [ ! -d "/home/${2}/ramdisk" ] ; then
+    mkdir /home/${2}/ramdisk >/dev/null
+  fi
+  if [ ! -d "/home/${2}/server_store" ] ; then
+    mkdir /home/${2}/server_store >/dev/null
+  fi
+  if [ ! -d "/home/${2}/backups" ] ; then
+    mkdir /home/${2}/backups >/dev/null
+  fi
+  chmod 0666 /home/${2}/backups >/dev/null
+  mount -t tmpfs tmpfs /home/${2}/ramdisk -o size=${1}m &>/tmp/srsi/srsi.logs
+  sleep 1
+  if [ 'df -h | grep ${2}' ] ; then
+    echo -e "${GRE}RAMDISK created and mounted at ${BOL}"/home/${user}/ramdisk"${NOR}${GRE} successfully!${NOR}"
+  else
+    echo -e "${RED}${BOL}RAMDISK could not be created!${NOR} Script can not continue!"
+    if grep -qE "/home/${user}/ramdisk" /etc/fstab ; then
+      sed -i ".bak" '/home/${user}/ramdisk' /etc/fstab &>/tmp/srsi/srsi.logs
+    fi
+    umount /home/${user}/ramdisk
+    userdel "${user}"
+    rm -rf "/tmp/srsi"
+    exit 1
+  fi
+}
+
+setup_init() {
+  echo -e "${YEL}Set up Spigot Server init script...${NOR}\n"
+  maxcpu=$(grep -c ^processor /proc/cpuinfo)
+  read -r -p "${maxr:-Maximum RAM:} " maxram
+  sleep 1
+  echo -e "You selected ${BOL}${maxram}${NOR}"
+  read -r -p "${maxsr:-Maximum Start RAM:} " maxsram
+  sleep 1
+  echo -e "You selected ${BOL}${maxsram}${NOR}"
+  sed "s/JARFILE=\"SPIGOTFILE\"/JARFILE=\"spigot-${1}.jar\"/g;s/USERNAME=\"USERACC\"/USERNAME=\"${2}\"/g;s/CPU_COUNT=MAXCPU/CPU_COUNT=${maxcpu}/g;s/MAX_RAM=MAXRAM/MAX_RAM=${maxram}/g;s/START_RAM=MAXSRAM/START_RAM=${maxsram}/g" < /tmp/srsi/spinit > /tmp/srsi/spinit.configured
+  sleep .1
+  cp "/tmp/srsi/spinit.configured" "/etc/init.d/spigot" &>/tmp/srsi/srsi.logs
+  chmod a+x "/etc/init.d/spigot" &>/tmp/srsi/srsi.logs
+  update-rc.d spigot defaults &>/tmp/srsi/srsi.logs
+  cp "/home/${2}/BuildTools/spigot-${1}.jar" "/home/${2}/server_store"
+  if [ ! -f "/home/${2}/server_store/spigot-${1}.jar" ] ; then
+    echo -e "[ ${BOL}${RED}Error${NOR} ] Could not copy ${BOL}spigot-${1}.jar${NOR} to server directory!"
+    exit 1
+  fi
+}

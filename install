@@ -1,0 +1,230 @@
+#!/bin/bash
+#
+#    / __| _ \_ _/ __|/ _ \_   _| | _ \  /_\ |  \/  |   \_ _/ __| |/ /     
+#    \__ \  _/| | (_ | (_) || |   |   / / _ \| |\/| | |) | |\__ \ ' <      
+#    |___/_|_|___\___|\___/ |_|   |_|_\/_/ \_\_|__|_|___/___|___/_|\_\ ___ 
+#    / __| __| _ \ \ / / __| _ \ |_ _| \| / __|_   _/_\ | |  | |  | __| _ \
+#    \__ \ _||   /\ V /| _||   /  | || .` \__ \ | |/ _ \| |__| |__| _||   /
+#    |___/___|_|_\ \_/ |___|_|_\ |___|_|\_|___/ |_/_/ \_\____|____|___|_|_\
+#
+# SPIGOT RAMDISK SERVER INSTALLER
+# BY JORDAN THOMPSON (WASASQUATCH)
+# v0.1 b1 4/01/2016
+# -----------------------------------
+# This script requires a fresh install of Debian/Ubuntu
+
+# INCLUDE LIB
+source srsilib
+
+# Begin Minecraft Installation
+clear
+echo -e "\n"
+echo -en $"${GRE}"
+echo $'                       .-\'  \ _.-\'\'-._ /  \'-.'
+echo $'                     .-/\   .\'.      .\'.   /\-.'
+echo $'                    _\'/  \.\'   \'.  .\'   \'./  \\\'_'
+echo $'                   :======:======::======:======:'
+echo $'                    \'. \'.  \     \'\'     /  .\' .\''
+echo $'                      \'. .  \   :  :   /  . .\''
+echo $'                        \'.\'  \  \'  \'  /  \'.\''
+echo $'                          \':  \:    :/  :\''
+echo $'                            \'. \    / .\''
+echo $'                              \'.\  /.\''
+echo $'                                \'\/\''
+echo -e "\n"
+echo $' ----------------------------------------------------------------------'
+echo $'  ___ ___ ___ ___  ___ _____       ___    _   __  __ ___ ___ ___ _  __'
+echo $' / __| _ \_ _/ __|/ _ \_   _|     | _ \  /_\ |  \/  |   \_ _/ __| |/ /'
+echo $' \__ \  _/| | (_ | (_) || |       |   / / _ \| |\/| | |) | |\__ \ \\\'<'
+echo $' |___/_|_|___\___|\___/ |_|       |_|_\/_/ \_\_|__|_|___/___|___/_|\_\\'
+echo $' / __| __| _ \ \ / / __| _ \ |_ _| \| / __|_   _/_\ | |  | |  | __| _ \\'
+echo $' \__ \ _||   /\ V /| _||   /  | || .` \__ \ | |/ _ \| |__| |__| _||   /'
+echo $' |___/___|_|_\ \_/ |___|_|_\ |___|_|\_|___/ |_/_/ \_\____|____|___|_|_\\'
+echo $' ----------------------------------------------------------------------'
+echo $'                 SPIGOT RAMDISK SERVER INSTALLER v0.1'
+echo $'                  by Jordan Thompson (WASasquatch)'
+echo $' ----------------------------------------------------------------------'
+echo -en $"${NOR}"
+sleep 1
+
+# Tmp doesn't exist for some reason? Create it
+if  [[ ! -d "/tmp" && ! -L "/tmp"  ]] ; then
+  mkdir /tmp
+fi 
+sleep .25
+# Setup SRSI Directory
+if [ ! "${adir}" = "/tmp/srsi" ] ; then 
+  echo -e "[ ${RED}${BOL}Error${NOR} ] You must execute SRSI from ${BOL}/tmp/srsi${NOR}"
+  exit 1
+fi
+chmod 0755 /tmp/srsi && cd /tmp/srsi 
+touch /tmp/srsi/srsi.logs
+
+# Do we download Sudo? You will need it later
+dosudo=$(sudo -n uptime 2>/dev/null|grep "load"|wc -l)
+sleep 1
+if [ ! ${dosudo} -gt 0 ] ; then
+  echo -e "${YEL}Sudo not found, installing...${NOR}"
+  srun 'apt-get --assume-yes install sudo &>/tmp/srsi/srsi.logs'
+  echo -e "\r\033[K[ ${GRE}Done${NOR} ] Sudo Installed!\n"
+fi
+
+if [ ! "${auser}" = "root" ] ; then
+  echo -e "${YEL}Add active user ${NOR}${BOL}'${auser}'${NOR}${YEL} to sudo group and add sudo rights?${NOR}"
+  if confirm ; then
+    adduser $auser sudo &>/tmp/srsi/srsi.logs
+    echo '${auser} ALL=(ALL:ALL) ALL' >> /etc/sudoers &>/tmp/srsi/srsi.logs
+  fi
+fi
+
+echo -e "Downloading ${BOL}BuildTools.jar${NOR} ...\n"
+srun 'wget -O BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar &>/tmp/srsi/srsi.logs'
+echo -e "\r\033[K[ ${GRE}Done${NOR} ] Downloaded BuildTools.jar!\n"
+
+# Setup Minecraft User
+echo -e "${YEL}What username would you like for the Spigot Server Account?${NOR}"
+read -r -p "${usert:-Username:} " user
+echo -e "${YEL}Are you sure you want to use ${NOR}${BOL}\"${user}\"${NOR}${YEL} for the Spigot Server Account? Otherwise \"${NOR}${BOL}spigot${NOR}${YEL}\" will be used.${NOR}"
+if confirm ; then
+  if [ -z "$(getent passwd ${user})" ] ; then
+    echo -e "${YEL}You are about to add \"${user}\" account to the system!${NOR}"
+    if confirm ; then
+      adduser --disabled-password --gecos "${user}" $user
+      echo -e "${YEL}Set new password for the \"${user}\" account:${NOR}"
+      if password_prompt ; then
+        echo "${user}:${passone}" | chpasswd
+      fi
+    else
+      echo -e "\n${RED}Aborting installating!${NOR}\n"
+      exit 1
+    fi
+  fi
+else
+  user='spigot'
+fi
+
+# Setup RAMDISK!
+echo -e "RAMDISK Settings...\n"
+ramdisk_memory $user
+
+# Install screen for Package Installs
+echo -e "Installing Screen...\n"
+srun 'apt-get --assume-yes -qq install screen &>/tmp/srsi/srsi.logs'
+echo -e "\r\033[K[ ${GRE}Done${NOR} ] Screen successfully installed!\n"
+
+# Oracle Java 8 Installation by Andrew @ http://www.webupd8.org
+echo -e "${YEL}You are about to upgrade your system to install required packages:${NOR}\n${BOL}oracle-java8-installer${NOR}, ${BOL}tar${NOR}*, ${BOL}git${NOR}\nThis can take awhile (skip if already installed)!\n"
+if confirm ; then
+screen -mS srsi bash -c 'echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list &>/tmp/srsi/srsi.logs
+  echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list &>/tmp/srsi/srsi.logs
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 | tee -a /tmp/srsi/srsi.logs
+  apt-get update | tee -a /tmp/srsi/srsi.logs && apt-get --yes --force-yes upgrade | tee -a /tmp/srsi/srsi.logs
+  apt-get install oracle-java8-installer git | tee -a /tmp/srsi/srsi.logs && exit
+  exec bash'
+  echo -e "[ ${GRE}Done${NOR} ] Prerequisites installed!\n"
+fi
+
+# Let's build the server
+echo -e "\n${YEL}What version of Spigot are you targeting (ex 1.9.2)?${NOR}\n"
+echo -e "${BOL}Recent Versions:${NOR}"
+echo -en $"${PMT}"
+echo $" - 1.8"
+echo $" - 1.8.3"
+echo $" - 1.8.7"
+echo $" - 1.8.8"
+echo $" - 1.9"
+echo $" - 1.9.2 (latest)"
+echo -e "${NOR}"
+read -r -p "${1:-Spigot Version:} " spigotver
+echo -e "You have selected to install ${BOL}Spigot v${spigotver}${NOR}? Otherwise using latest build?\n"
+if ! confirm ; then
+  echo -e "Selecting latest build of Spigot Server...\n"
+  spigotver='1.9.2'
+fi
+echo -e "\n${YEL}Running BuildTools.jar...${NOR} ${BOL}This can take awhile to finish.${NOR}\n"
+mkdir "/home/${user}/BuildTools" &>/tmp/srsi/srsi.logs && cp "/tmp/srsi/BuildTools.jar" "/home/${user}/BuildTools" &>/tmp/srsi/srsi.logs && cd "/home/${user}/BuildTools"
+# If the srun function kills the script try screen
+# screen -mS srsi bash -c "cd /home/${user}/BuildTools 
+# git config --global --unset core.autocrlf
+# (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
+# cd /tmp/srsi 
+# exec bash exit"
+srun "cd /home/${user}/BuildTools 
+git config --global --unset core.autocrlf
+(java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
+cd /tmp/srsi" "ticker"
+if [ "${spigotver}" = "latest" ] ; then
+  spigotver="1.9.2"
+fi
+if [ -f "/home/${user}/BuildTools/spigot-${spigotver}.jar" ] ; then
+  echo -e "\n[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
+fi
+
+# What type of server are we running? (Spigot or Bukkit)
+echo -e "\nInstalling ${BOL}Spigot Server ${PMT}v${spigotver}${NOR}...\n"
+cp "/home/${user}/BuildTools/spigot-${spigotver}.jar" "/home/${user}/server_store" &>/tmp/srsi/srsi.logs
+setup_init $spigotver $user
+echo -e "\nDo you accept ${YEL}${BOL}Mojang's EULA${NOR}? (https://account.mojang.com/documents/minecraft_eula)"
+if confirm ; then
+  echo "#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).
+#Generated by Minecraft RAMDISK Spigot Installer by WASasquatch
+eula=true" > /home/$user/server_store/eula.txt
+else
+  echo "#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).
+#Generated by RAMDISK Spigot Installer by WASasquatch
+eula=false" > /home/$user/server_store/eula.txt
+  echo -e "${RED}You must accept Mojang's EULA to continue.${NOR} Installer can not continue\n"
+  umount /home/${user}/ramdisk &>/tmp/srsi/srsi.logs
+  userdel $user &>/tmp/srsi/srsi.logs
+  sleep 1
+  rm -rf "/home/${user}"
+  exit 1
+fi
+
+# Chown up server
+chown -R $user:$user "/home/$user" &>/tmp/srsi/srsi.logs
+
+# Start the Minecraft Server
+echo -e "\n${YEL}Starting minecraft for the first time...${NOR}\n"
+srun '/etc/init.d/spigot start &>/tmp/srsi/srsi.logs'
+sleep 4
+status=$(/etc/init.d/spigot ping)
+if [ $status -eq 0 ] ; then
+  echo -e "\r\033[K[ ${GRE}Done${NOR} ] Server started successfully, stopping server..."
+else
+  echo -e "\r\033[K[ ${RED}${BOL}Error${NOR} ] Server could not start, see minecraft logs at /home/${user}/ramdisk/logs/latest.log"
+  exit 1
+fi
+srun '/etc/init.d/spigot stop &>/tmp/srsi/srsi.logs'
+sleep 4
+status=$(/etc/init.d/spigot ping)
+if [ $status -eq 1 ] ; then
+  echo -e "\r\033[K[ ${RED}${BOL}Error${NOR} ] Server could not be stopped, see minecraft logs at /home/${user}/ramdisk/logs/latest.log"
+  exit 1
+else
+  echo -e "\r\033[K[ ${GRE}Done${NOR} ] Server successfully stopped!"
+fi
+
+# Setup server default port
+if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
+  iptables -A INPUT -p tcp --dport 25565 -j ACCEPT
+  if /etc/init.d/networking restart ; then 
+    echo -e "[ ${GRE}Done${NOR} ] Networking interface restarted!\n"
+  fi
+fi
+
+# Setup Backup and Save Crontabs
+if crontab -l | grep -vq '/etc/init.d/spigot' ; then 
+  echo -e "Installing crontabs for ramdisk and world backups...\n"
+  (crontab -l ; echo "# Spigot Server Cronjobs") | crontab -
+  (crontab -l ; echo "*/5 * * * * /etc/init.d/spigot disksaverun") | crontab -
+  (crontab -l ; echo "20 */4 * * * /etc/init.d/spigot backup") | crontab -
+  echo -e "[ ${GRE}Done${NOR} ] Cronjobs installed!\n"
+fi
+
+echo -e "${GRE}${BOL}Spigot RAMDISK Server Installer has completed!${NOR}"
+echo -e "You can now customize your server, and start it with: ${BOL}service spigot start${NOR}"
+echo -e "${PMT}Usage:${NOR} service spigot ${YEL}{start|stop|restart|cmd \"say Hello World\"|backup|status|ping|cramdisk|cjava|disksaverun}${NOR}\n"
+
+exit 0
+esac
