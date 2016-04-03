@@ -119,7 +119,9 @@ screen -mS srsi bash -c 'echo "deb http://ppa.launchpad.net/webupd8team/java/ubu
   echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list &>/tmp/srsi/srsi.logs
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 | tee -a /tmp/srsi/srsi.logs
   apt-get update | tee -a /tmp/srsi/srsi.logs && apt-get --yes --force-yes upgrade | tee -a /tmp/srsi/srsi.logs
-  apt-get install oracle-java8-installer git | tee -a /tmp/srsi/srsi.logs && exit
+  if java -version 2>&1 >/dev/null | grep -qv "java version"; then
+    apt-get install oracle-java8-installer git | tee -a /tmp/srsi/srsi.logs && exit
+  fi
   exec bash'
   echo -e "[ ${GRE}Done${NOR} ] Prerequisites installed!\n"
 fi
