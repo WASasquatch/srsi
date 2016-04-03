@@ -122,7 +122,7 @@ screen -mS srsi bash -c 'echo "deb http://ppa.launchpad.net/webupd8team/java/ubu
   if java -version 2>&1 >/dev/null | grep -qv "java version" ; then
     apt-get install oracle-java8-installer | tee -a /tmp/srsi/srsi.logs && exit
   fi
-  if git --version 2>&1 >/dev/null | grep -qv "git versino" ; then
+  if git --version 2>&1 >/dev/null | grep -qv "git version" ; then
     apt-get --yes --force-yes install git
   fi
   exec bash'
