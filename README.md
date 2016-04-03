@@ -23,7 +23,7 @@ To get and run SRSI, the easiest method is to run the following line of commands
 *Note:* It's advised to use a clean install of Debian/Ubuntu
 
 ```bash
-su - wget --no-check-certificate -O srsi.tar.gz https://github.com/WASasquatch/srsi/archive/master.tar.gz&&cd /tmp&&mkdir srsi&&cd srsi&&cp /tmp/srsi.tar.gz /tmp/srsi&&tar -zxvf srsi.tar.gz --strip-components 1&&chmod a+x install&&./install
+su -c 'wget --no-check-certificate -O srsi.tar.gz https://github.com/WASasquatch/srsi/archive/master.tar.gz&&cd /tmp&&mkdir srsi&&cd srsi&&cp /tmp/srsi.tar.gz /tmp/srsi&&tar -zxvf srsi.tar.gz --strip-components 1&&chmod a+x install&&./install'
 ```
 
 Follow the onscreen prompts carefully. You can also use SRSI to update a user accounts version of Spigot Server.
