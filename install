@@ -50,6 +50,7 @@ sleep 1
 # Tmp doesn't exist for some reason? Create it
 if  [[ ! -d "/tmp" && ! -L "/tmp"  ]] ; then
   mkdir /tmp
+  chmod 1777 /tmp
 fi 
 sleep .25
 # Setup SRSI Directory
@@ -70,11 +71,7 @@ if [ ! ${dosudo} -gt 0 ] ; then
 fi
 
 if [ ! "${auser}" = "root" ] ; then
-  echo -e "${YEL}Add active user ${NOR}${BOL}'${auser}'${NOR}${YEL} to sudo group and add sudo rights?${NOR}"
-  if confirm ; then
-    adduser $auser sudo &>/tmp/srsi/srsi.logs
-    echo '${auser} ALL=(ALL:ALL) ALL' >> /etc/sudoers &>/tmp/srsi/srsi.logs
-  fi
+  echo -e "${RED}Please run SRSI Installer as Root!{NOR}"
 fi
 
 echo -e "Downloading ${BOL}BuildTools.jar${NOR} ...\n"
