@@ -160,7 +160,7 @@ if [ "${spigotver}" = "latest" ] ; then
   spigotver="1.9.2"
 fi
 if [ -f "/home/${user}/BuildTools/spigot-${spigotver}.jar" ] ; then
-  echo -e "\n[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
+  echo -e "\r\033[K[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
 fi
 
 # What type of server are we running? (Spigot or Bukkit)
