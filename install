@@ -72,6 +72,7 @@ fi
 
 if [ ! "${auser}" = "root" ] ; then
   echo -e "${RED}Please run SRSI Installer as Root!{NOR}"
+  exit 1
 fi
 
 echo -e "Downloading ${BOL}BuildTools.jar${NOR} ...\n"
