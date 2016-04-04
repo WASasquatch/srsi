@@ -220,8 +220,8 @@ fi
 if crontab -l | grep -vq '/etc/init.d/spigot' ; then 
   echo -e "Installing crontabs for ramdisk and world backups...\n"
   (crontab -l ; echo "# Spigot Server Cronjobs") | crontab -
-  (crontab -l ; echo "*/5 * * * * /etc/init.d/spigot disksaverun") | crontab -
-  (crontab -l ; echo "20 */4 * * * /etc/init.d/spigot backup") | crontab -
+  (crontab -l ; echo "*/5 * * * * /etc/init.d/spigot disksaverun &>/dev/null") | crontab -
+  (crontab -l ; echo "20 */4 * * * /etc/init.d/spigot backup &>/dev/null") | crontab -
   echo -e "[ ${GRE}Done${NOR} ] Cronjobs installed!\n"
 fi
 
