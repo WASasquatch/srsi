@@ -9,7 +9,7 @@
 #
 # SPIGOT RAMDISK SERVER INSTALLER
 # BY JORDAN THOMPSON (WASASQUATCH)
-# v0.2 b1 4/04/2016
+# v0.2.1 b1 4/04/2016
 # -----------------------------------
 # This script requires a fresh install of Debian/Ubuntu
 
@@ -196,14 +196,12 @@ if [ $status -eq 0 ] ; then
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Server started successfully, stopping server..."
 else
   echo -e "\r\033[K[ ${RED}${BOL}Error${NOR} ] Server could not start, see minecraft logs at /home/${user}/ramdisk/logs/latest.log"
-  exit 1
 fi
 srun '/etc/init.d/spigot stop &>/tmp/srsi/srsi.logs'
 sleep 4
 status=$(/etc/init.d/spigot ping)
 if [ $status -eq 1 ] ; then
   echo -e "\r\033[K[ ${RED}${BOL}Error${NOR} ] Server could not be stopped, see minecraft logs at /home/${user}/ramdisk/logs/latest.log"
-  exit 1
 else
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Server successfully stopped!"
 fi
