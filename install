@@ -187,6 +187,17 @@ fi
 # Chown up server
 chown -R $user:$user "/home/$user" &>/tmp/srsi/srsi.logs
 
+# Setup server default port
+if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
+  iptables -A INPUT -p tcp --dport 25565 -j ACCEPT
+  echo -n "Attempt to restart networking interface? (This is risky business)"
+  if confirm ; then
+    if /etc/init.d/networking restart ; then 
+      echo -e "[ ${GRE}Done${NOR} ] Networking interface restarted!\n"
+    fi
+  fi
+fi
+
 # Start the Minecraft Server
 echo -e "\n${YEL}Starting minecraft for the first time...${NOR}\n"
 srun '/etc/init.d/spigot start &>/tmp/srsi/srsi.logs'
@@ -204,14 +215,6 @@ if [ $status -eq 1 ] ; then
   echo -e "\r\033[K[ ${RED}${BOL}Error${NOR} ] Server could not be stopped, see minecraft logs at /home/${user}/ramdisk/logs/latest.log"
 else
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Server successfully stopped!"
-fi
-
-# Setup server default port
-if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
-  iptables -A INPUT -p tcp --dport 25565 -j ACCEPT
-  if /etc/init.d/networking restart ; then 
-    echo -e "[ ${GRE}Done${NOR} ] Networking interface restarted!\n"
-  fi
 fi
 
 # Setup Backup and Save Crontabs
