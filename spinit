@@ -40,14 +40,6 @@ YEL="\e[33m"
 # ERRORS
 LAST_BACK="${RED}${BOL}Last $WORLD.bak still exists!${NOR} The server may have crashed. ${YEL}Please check logs.${NOR}\n"
 
-check_java() {
-  if java -version 2>&1 >/dev/null | grep -q "java version"; then
-    return 1
-  else 
-    return 0
-  fi
-}
-
 check_ramdisk() {
   if ! df -h | grep -q $MCPATH ; then
     return 1
@@ -70,34 +62,26 @@ mc_status() {
 }
 
 mc_start() {
-  if check_java ; then
-    if mc_status ; then
-      echo -e "${YEL}Tried to start but $JARFILE was already running!${NOR}"
-    else
-	  #if ! df -h | grep -q $MCPATH ; then
-      #  echo -e "${YEL}Starting RAMDISK...${NOR}\n"
-      #  start_ramdisk
-      #fi	  
-      echo -e "${YEL}Starting ${JARFILE}...${NOR}"
-      if [ -d $MCSTORE/$WORLD.bak ]; then
-        echo -e $LAST_BACK
-        exit 1
-      fi
-      cd $MCPATH
-      if [ ! -f "$MCPATH/$JARFILE" ]; then 
-        echo -e "${YEL}RAMDISK is empty...  prepping.${NOR}"
-        as_user "cp -R $MCSTORE/* $MCPATH/"
-      fi
-      as_user "cd $MCPATH && screen -dmS minecraft $INVOCATION"
-      sleep 7
-      if mc_status; then
-        echo -e "${GRE}${JARFILE} is now running.${NOR}"
-      else
-        echo -e "${RED}${BOL}Could not start $JARFILE.${NOR}"
-      fi
+  if mc_status ; then
+    echo -e "${YEL}Tried to start but $JARFILE was already running!${NOR}"
+  else	  
+    echo -e "${YEL}Starting ${JARFILE}...${NOR}"
+    if [ -d $MCSTORE/$WORLD.bak ]; then
+      echo -e $LAST_BACK
+      exit 1
     fi
-  else
-    exit 1
+    cd $MCPATH
+    if [ ! -f "$MCPATH/$JARFILE" ]; then 
+      echo -e "${YEL}RAMDISK is empty...  prepping.${NOR}"
+      as_user "cp -R $MCSTORE/* $MCPATH/"
+    fi
+    as_user "cd $MCPATH && screen -dmS minecraft $INVOCATION"
+    sleep 7
+    if mc_status; then
+      echo -e "${GRE}${JARFILE} is now running.${NOR}"
+    else
+      echo -e "${RED}${BOL}Could not start $JARFILE.${NOR}"
+    fi
   fi
 }
 
@@ -208,13 +192,6 @@ mc_rdhalt() {
 
 #Start-Stop here
 case "$1" in
-  cjava)
-    if check_java ; then
-      echo -e "${BOL}Oracle Java 7${NOR} or higher is required to run Minecraft Server. (Oracle Java 8 Recommended)\n"
-    else
-      echo -e "${GRE}Java is installed!${NOR}"
-    fi
-    ;;
   cramdisk)
     if check_ramdisk ; then
       echo -e "${BOL}${RED}RAMDISK is offline!${NOR}\n"
@@ -223,7 +200,6 @@ case "$1" in
     fi
     ;;
   start)
-    check_java
     mc_start
     ;;
   stop)
@@ -268,7 +244,7 @@ case "$1" in
 	awk '/./{line=$0} END{print line}' ${MCPATH}/logs/latest.log
     ;;
   *)
-  echo "Usage: service spigot {start|stop|restart|cmd \"say Hello World\"|backup|status|ping|cramdisk|cjava|disksaverun}"
+  echo "Usage: service spigot {start|stop|restart|cmd \"say Hello World\"|backup|status|ping|cramdisk|disksaverun}"
   exit 1
   ;;
 esac
