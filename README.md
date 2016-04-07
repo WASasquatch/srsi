@@ -12,6 +12,7 @@ A simple tool to install the Spigot Server on Debian/Ubuntu for server administr
 ## Provides
 
  - Minecraft Server *(Spigot Server)*
+ - Minecraft Init Script
  - Spigot BuildTools.jar *(to build the Spigot Server)*
  - Oracle Java 8
  - Git *(GitHub Debian/Ubuntu)*
