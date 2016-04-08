@@ -190,7 +190,7 @@ chown -R $user:$user "/home/$user" &>/tmp/srsi/srsi.logs
 # Setup server default port
 if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
   iptables -A INPUT -p tcp --dport 25565 -j ACCEPT
-  echo -n "Attempt to restart networking interface? (This is risky business)"
+  echo -e "${YEL}Attempt to restart networking interface?${NOR} ${RED}(This is risky business)${NOR}"
   if confirm ; then
     if /etc/init.d/networking restart ; then 
       echo -e "[ ${GRE}Done${NOR} ] Networking interface restarted!\n"
