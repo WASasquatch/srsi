@@ -88,6 +88,9 @@ ramdisk_memory() {
 setup_ramdisk() {
   echo -e "\n${YEL}Setting up RAMDISK...${NOR}\n"
   sleep 1
+  if df -h | grep "/home/${user}/ramdisk" &>/tmp/srsi/srsi.logs ; then
+    umount /home/${user}/ramdisk
+  fi
   if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
     (echo "tmpfs  /home/${2}/ramdisk tmpfs  defaults,size=${1}m    0       0" | tee --append /etc/fstab) &>/tmp/srsi/srsi.logs
   else
