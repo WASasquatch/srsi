@@ -215,7 +215,7 @@ fi
 srun '/etc/init.d/spigot stop &>/tmp/srsi/srsi.logs'
 sleep 4
 status=$(/etc/init.d/spigot ping)
-if [ $status -eq 1 ] ; then
+if [ $status -eq 0 ] ; then
   echo -e "\r\033[K[ ${RED}${BOL}Error${NOR} ] Server could not be stopped, see minecraft logs at /home/${user}/ramdisk/logs/latest.log"
 else
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Server successfully stopped!"
