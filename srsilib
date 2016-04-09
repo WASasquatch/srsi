@@ -104,7 +104,6 @@ setup_ramdisk() {
   if [ ! -d "/home/${2}/backups" ] ; then
     mkdir /home/${2}/backups >/dev/null
   fi
-  chmod 0666 /home/${2}/backups >/dev/null
   mount -t tmpfs tmpfs /home/${2}/ramdisk -o size=${1}m &>/tmp/srsi/srsi.logs
   sleep 1
   if [ 'df -h | grep ${2}' ] ; then
