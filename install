@@ -240,7 +240,7 @@ fi
 
 echo -e "${GRE}${BOL}Spigot RAMDISK Server Installer has completed!${NOR}"
 echo -e "You can now customize your server, and start it with: ${BOL}service spigot start${NOR}"
-echo -e "${PMT}Usage:${NOR} service spigot ${YEL}{start|stop|restart|cmd \"say Hello World\"|backup|status|ping|cramdisk|cjava|disksaverun}${NOR}\n"
+echo -e "${PMT}Usage:${NOR} service spigot ${YEL}{start|stop|restart|cmd \"say Hello World\"|backup|status|ping|cramdisk|disksaverun}${NOR}\n"
 
 exit 0
 esac
