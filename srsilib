@@ -115,8 +115,6 @@ setup_ramdisk() {
       sed -i ".bak" '/home/${user}/ramdisk' /etc/fstab &>/tmp/srsi/srsi.logs
     fi
     umount /home/${user}/ramdisk
-    userdel "${user}"
-    rm -rf "/tmp/srsi"
     exit 1
   fi
 }
