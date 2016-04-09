@@ -57,15 +57,13 @@ password_prompt() {
   echo -n "Enter new password:"
   read -s passone
   sleep .25
-  echo -e "\n"
   echo -n "Repeat new password:"
   read -s passtwo
   echo -e "\n"
   if [[ ! "${passone}" = "${passtwo}" ]] ; then
-    echo -e "${RED}Password Mismatch!${NOR} Please try again."
+    echo -n "${RED}Password Mismatch!${NOR} Please try again."
     password_prompt
   else
-    echo -e "\n"
     return 0
   fi
 }
