@@ -90,6 +90,9 @@ setup_ramdisk() {
   sleep 1
   if grep -Fvq "/home/${user}/ramdisk" /etc/fstab ; then
     (echo "tmpfs  /home/${2}/ramdisk tmpfs  defaults,size=${1}m    0       0" | tee --append /etc/fstab) &>/tmp/srsi/srsi.logs
+  else
+    sed -i.bak '/\/home\/${2}\/ramdisk/d' /etc/fstab &>/tmp/srsi/srsi.logs
+    (echo "tmpfs  /home/${2}/ramdisk tmpfs  defaults,size=${1}m    0       0" | tee --append /etc/fstab) &>/tmp/srsi/srsi.logs
   fi
   if [ ! -d "/home/${2}/ramdisk" ] ; then
     mkdir /home/${2}/ramdisk >/dev/null
