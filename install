@@ -222,7 +222,7 @@ else
 fi
 
 # Setup Backup and Save Crontabs
-if crontab -l | grep -vq '/etc/init.d/spigot' ; then 
+if ! crontab -l | grep "/etc/init.d/spigot" &>/tmp/srsi/srsi.logs ; then 
   echo -e "Installing crontabs for ramdisk and world backups...\n"
   (crontab -l ; echo "# Spigot Server Cronjobs") | crontab -
   (crontab -l ; echo "*/5 * * * * /etc/init.d/spigot disksaverun &>/dev/null") | crontab -
