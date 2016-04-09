@@ -127,6 +127,7 @@ screen -mS srsi bash -c 'echo "deb http://ppa.launchpad.net/webupd8team/java/ubu
   echo -e "[ ${GRE}Done${NOR} ] Prerequisites installed!\n"
 fi
 
+
 # Let's build the server
 echo -e "\n${YEL}What version of Spigot are you targeting (ex 1.9.2)?${NOR}\n"
 echo -e "${BOL}Recent Versions:${NOR}"
@@ -144,23 +145,26 @@ if ! confirm ; then
   echo -e "Selecting latest build of Spigot Server...\n"
   spigotver='1.9.2'
 fi
-echo -e "\n${YEL}Running BuildTools.jar...${NOR} ${BOL}This can take awhile to finish.${NOR}\n"
-mkdir "/home/${user}/BuildTools" &>/tmp/srsi/srsi.logs && cp "/tmp/srsi/BuildTools.jar" "/home/${user}/BuildTools" &>/tmp/srsi/srsi.logs && cd "/home/${user}/BuildTools"
-# If the srun function kills the script try screen
-# screen -mS srsi bash -c "cd /home/${user}/BuildTools 
-# git config --global --unset core.autocrlf
-# (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
-# cd /tmp/srsi 
-# exec bash exit"
-srun "cd /home/${user}/BuildTools 
-git config --global --unset core.autocrlf
-(java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
-cd /tmp/srsi" "ticker"
-if [ "${spigotver}" = "latest" ] ; then
-  spigotver="1.9.2"
-fi
-if [ -f "/home/${user}/BuildTools/spigot-${spigotver}.jar" ] ; then
-  echo -e "\r\033[K[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
+echo -e "${YEL}Skip building jar files?${NOR} (This can be skipped to use SRSI to reconfiugre some settings)"
+if ! confirm ; then
+  echo -e "\n${YEL}Running BuildTools.jar...${NOR} ${BOL}This can take awhile to finish.${NOR}\n"
+  mkdir "/home/${user}/BuildTools" &>/tmp/srsi/srsi.logs && cp "/tmp/srsi/BuildTools.jar" "/home/${user}/BuildTools" &>/tmp/srsi/srsi.logs && cd "/home/${user}/BuildTools"
+  # If the srun function kills the script try screen
+  # screen -mS srsi bash -c "cd /home/${user}/BuildTools 
+  # git config --global --unset core.autocrlf
+  # (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
+  # cd /tmp/srsi 
+  # exec bash exit"
+  srun "cd /home/${user}/BuildTools 
+  git config --global --unset core.autocrlf
+  (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
+  cd /tmp/srsi" "ticker"
+  if [ "${spigotver}" = "latest" ] ; then
+    spigotver="1.9.2"
+  fi
+  if [ -f "/home/${user}/BuildTools/spigot-${spigotver}.jar" ] ; then
+    echo -e "\r\033[K[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
+  fi
 fi
 
 # What type of server are we running? (Spigot or Bukkit)
