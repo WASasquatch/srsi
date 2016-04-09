@@ -176,7 +176,7 @@ mc_rdhalt() {
         exit 1
      fi
      if [ -d "${MCSTORE}/${WORLD}" ]; then
-       as_user "mv ${MCSTORE}/${WORLD} ${MCSTORE}/{$WORLD}.bak"
+       as_user "mv ${MCSTORE}/${WORLD} ${MCSTORE}/${WORLD}.bak"
      fi
 
      echo -e "${GRE}Saved.${NOR} Screen session closed."
