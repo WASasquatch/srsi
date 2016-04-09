@@ -19,7 +19,7 @@ JARFILE="SPIGOTFILE"
 USERNAME="USERACC"
 MCSTORE="/home/$USERNAME/server_store"
 MCPATH="/home/$USERNAME/ramdisk"
-BACKUPPATH="/home/$USERNAME/backups/"
+BACKUPPATH="/home/$USERNAME/backups"
 WORLD='world'
 
 # Machine Settings
@@ -147,7 +147,7 @@ mc_rdsave() {
         exit 1
       fi
       if [ -d "${MCSTORE}/${WORLD}" ]; then
-        as_user "mv {$MCSTORE}/${WORLD} ${MCSTORE}/${WORLD}.bak"
+        as_user "mv ${MCSTORE}/${WORLD} ${MCSTORE}/${WORLD}.bak"
       fi
 
       TO_SCREEN="screen -p 0 -S minecraft -X eval 'stuff "
