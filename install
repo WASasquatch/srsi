@@ -46,12 +46,20 @@ echo $'                  by Jordan Thompson (WASasquatch)'
 echo $' ----------------------------------------------------------------------'
 echo -en $"${NOR}"
 sleep 1
-
 # Tmp doesn't exist for some reason? Create it
 if  [[ ! -d "/tmp" && ! -L "/tmp"  ]] ; then
   mkdir /tmp
   chmod 1777 /tmp
-fi 
+fi
+
+# Is the spigot service running?
+status=$(/etc/init.d/spigot ping)
+if [ $status -eq 0 ] ; then
+  echo -e "${YEL}Spigot Service is already running, backing up and stopping...${NOR}"
+  srun '/etc/init.d/spigot backup &>/tmp/srsi/srsi.logs && /etc/init.d/spigot stop &>/tmp/srsi/srsi.logs'
+  echo -e "\r\033[K[ ${GRE}Done${NOR} ] Spigot backed up and stopped!\n"
+fi
+
 sleep .25
 # Setup SRSI Directory
 if [ ! "${adir}" = "/tmp/srsi" ] ; then 
