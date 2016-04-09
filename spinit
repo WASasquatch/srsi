@@ -133,7 +133,7 @@ mc_stop() {
 mc_backup() {
    echo -e "${YEL}Backing up minecraft files...${NOR}"
    date=$(date "+%Y.%m.%d-%H")
-   as_user "tar -zcvf ${BACKUPPATH}/MCBKUP_${date}.tar.gz ${MCSTORE}"
+   as_user "tar -zcvf ${BACKUPPATH}/spigot_${date}.tar.gz ${MCSTORE}"
    echo -e "${GRE}Backup complete!${NOR}"
 }
 
