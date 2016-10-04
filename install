@@ -53,7 +53,12 @@ if  [[ ! -d "/tmp" && ! -L "/tmp"  ]] ; then
 fi
 
 # Is the spigot service running?
-status=$(/etc/init.d/spigot ping)
+if [ ! -f /tmp/foo.txt ]; then
+  status=$(/etc/init.d/spigot ping)
+else
+  status=1
+fi
+
 if [ $status -eq 0 ] ; then
   echo -e "${YEL}Spigot Service is already running, backing up and stopping...${NOR}"
   srun '/etc/init.d/spigot backup &>/tmp/srsi/srsi.logs && /etc/init.d/spigot stop &>/tmp/srsi/srsi.logs'
