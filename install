@@ -53,7 +53,7 @@ if  [[ ! -d "/tmp" && ! -L "/tmp"  ]] ; then
 fi
 
 # Is the spigot service running?
-if [ ! -f /tmp/foo.txt ]; then
+if [ ! -f /etc/init.d/spigot ]; then
   status=$(/etc/init.d/spigot ping)
 else
   status=1
