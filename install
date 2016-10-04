@@ -156,7 +156,7 @@ read -r -p "${1:-Spigot Version:} " spigotver
 echo -e "You have selected to install ${BOL}Spigot v${spigotver}${NOR}? Otherwise using latest build?\n"
 if ! confirm ; then
   echo -e "Selecting latest build of Spigot Server...\n"
-  spigotver='1.9.2'
+  spigotver='latest'
 fi
 echo -e "${YEL}Skip building jar files?${NOR} (This can be skipped to use SRSI to reconfiugre some settings)"
 if ! confirm ; then
