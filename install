@@ -170,6 +170,10 @@ if ! confirm ; then
   cd /tmp/srsi" "ticker"
   spigotjar=$(cd /home/${user}/BuildTools.jar && ls -t spigot*.jar | head -1)
   spigotver=$(echo ${spigotjar} | sed "s/^spigot-\(.*\).jar$/\1/")
+  echo "\\nn TESTING \n"
+  echo spigotver
+  echo "\n"
+  echo spigotjar
   if [ -f "/home/${user}/BuildTools/${spigotjar}" ] ; then
     echo -e "\r\033[K[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
   fi
@@ -178,7 +182,7 @@ fi
 # What type of server are we running? (Spigot or Bukkit)
 echo -e "\nInstalling ${BOL}Spigot Server ${PMT}v${spigotver}${NOR}...\n"
 cp "/home/${user}/BuildTools/spigot-${spigotver}.jar" "/home/${user}/server_store" &>/tmp/srsi/srsi.logs
-setup_init $spigotver $user
+setup_init $spigotjar $user
 echo -e "\nDo you accept ${YEL}${BOL}Mojang's EULA${NOR}? (https://account.mojang.com/documents/minecraft_eula)"
 if confirm ; then
   echo "#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).
