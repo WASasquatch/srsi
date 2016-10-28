@@ -133,7 +133,7 @@ setup_init() {
   chmod a+x "/etc/init.d/spigot" &>/tmp/srsi/srsi.logs
   update-rc.d spigot defaults &>/tmp/srsi/srsi.logs
   cp "/home/${2}/BuildTools/spigot-${1}.jar" "/home/${2}/server_store"
-  if [ ! -f "/home/${2}/server_store/spigot-${1}.jar" ] ; then
+  if [ ! -f "/home/${2}/server_store/${1}" ] ; then
     echo -e "[ ${BOL}${RED}Error${NOR} ] Could not copy ${BOL}spigot-${1}.jar${NOR} to server directory!"
     exit 1
   fi
