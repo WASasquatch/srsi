@@ -142,15 +142,11 @@ fi
 
 
 # Let's build the server
-echo -e "\n${YEL}What version of Spigot are you targeting (ex 1.9.2)?${NOR}\n"
-echo -e "${BOL}Recent Versions:${NOR}"
+echo -e "\n${YEL}What version of Spigot are you targeting? (No dash.)${NOR}\n"
+echo -e "${BOL}Example:${NOR}"
 echo -en $"${PMT}"
-echo $" - 1.8"
-echo $" - 1.8.3"
-echo $" - 1.8.7"
-echo $" - 1.8.8"
-echo $" - 1.9"
-echo $" - 1.9.2 (latest)"
+echo $" - 1.10.2"
+echo $" - latest"
 echo -e "${NOR}"
 read -r -p "${1:-Spigot Version:} " spigotver
 echo -e "You have selected to install ${BOL}Spigot v${spigotver}${NOR}? Otherwise using latest build?\n"
@@ -172,10 +168,9 @@ if ! confirm ; then
   git config --global --unset core.autocrlf
   (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
   cd /tmp/srsi" "ticker"
-  if [ "${spigotver}" = "latest" ] ; then
-    spigotver="1.9.2"
-  fi
-  if [ -f "/home/${user}/BuildTools/spigot-${spigotver}.jar" ] ; then
+  spigotjar=$(cd /home/${user}/BuildTools.jar && ls -t spigot*.jar | head -1)
+  spigotver=$(echo ${spigotjar} | sed "s/^spigot-\(.*\).jar$/\1/")
+  if [ -f "/home/${user}/BuildTools/${spigotjar}" ] ; then
     echo -e "\r\033[K[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
   fi
 fi
