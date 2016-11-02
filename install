@@ -168,7 +168,8 @@ if ! confirm ; then
   git config --global --unset core.autocrlf
   (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
   cd /tmp/srsi" "ticker"
-  spigotjar=$(cd /home/${user}/BuildTools.jar && ls -t spigot*.jar | head -1)
+  cd /home/${user}/BuildTools
+  spigotjar=$(ls -t spigot*.jar | head -1)
   spigotver=$(echo ${spigotjar} | sed "s/^spigot-\(.*\).jar$/\1/")
   echo "\\nn TESTING \n"
   echo spigotver
