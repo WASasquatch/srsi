@@ -83,7 +83,7 @@ if [ ! ${dosudo} -gt 0 ] ; then
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Sudo Installed!\n"
 fi
 
-srun 'apt-get --assume-yes install sudo &>/tmp/srsi/srsi.logs'
+srun 'apt-get --assume-yes install git &>/tmp/srsi/srsi.logs'
 echo -e "\r\033[K[ ${GRE}Done${NOR} ] Git Installed!\n"
 
 if [ ! "${auser}" = "root" ] ; then
