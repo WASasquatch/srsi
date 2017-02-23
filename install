@@ -146,7 +146,6 @@ echo -e "\n${YEL}What version of Spigot are you targeting? (No dash.)${NOR}\n"
 echo -e "${BOL}Example:${NOR}"
 echo -en $"${PMT}"
 echo $" - 1.11"
-echo $" - latest"
 echo -e "${NOR}"
 read -r -p "${1:-Spigot Version:} " spigotver
 echo -e "You have selected to install ${BOL}Spigot v${spigotver}${NOR}? Otherwise using latest build?\n"
@@ -169,12 +168,7 @@ if ! confirm ; then
   (java -jar /home/${user}/BuildTools/BuildTools.jar --rev ${spigotver}) &>/tmp/srsi/srsi.logs
   cd /tmp/srsi" "ticker"
   cd /home/${user}/BuildTools
-  spigotjar=$(ls -t spigot*.jar | head -1)
-  spigotver=$(echo ${spigotjar} | sed "s/^spigot-\(.*\).jar$/\1/")
-  echo "\\nn TESTING \n"
-  echo spigotver
-  echo "\n"
-  echo spigotjar
+  spigotjar="spigot-${spigotver}.jar"
   if [ -f "/home/${user}/BuildTools/${spigotjar}" ] ; then
     echo -e "\r\033[K[ ${GRE}${BOL}Done${NOR} ] Server jars built successfully!\n"
   fi
