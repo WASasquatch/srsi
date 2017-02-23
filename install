@@ -83,6 +83,14 @@ if [ ! ${dosudo} -gt 0 ] ; then
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Sudo Installed!\n"
 fi
 
+git --version 2>&1 >/dev/null
+GIT_AVAILABLE=$?
+if [ $GIT_AVAILABLE -eq 0 ] ; then 
+  echo -e "${YEL}Git not found, installing...${NOR}"
+  srun 'apt-get --assume-yes install sudo &>/tmp/srsi/srsi.logs'
+  echo -e "\r\033[K[ ${GRE}Done${NOR} ] Git Installed!\n"
+fi
+
 if [ ! "${auser}" = "root" ] ; then
   echo -e "${RED}Please run SRSI Installer as Root!{NOR}"
   exit 1
