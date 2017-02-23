@@ -148,10 +148,10 @@ echo -en $"${PMT}"
 echo $" - 1.11"
 echo -e "${NOR}"
 read -r -p "${1:-Spigot Version:} " spigotver
-echo -e "You have selected to install ${BOL}Spigot v${spigotver}${NOR}? Otherwise using latest build?\n"
+echo -e "You have selected to install ${BOL}Spigot v${spigotver}${NOR}? Otherwise exit?\n"
 if ! confirm ; then
-  echo -e "Selecting latest build of Spigot Server...\n"
-  spigotver='latest'
+  echo -e "Exiting...\n"
+  exit 1
 fi
 echo -e "${YEL}Skip building jar files?${NOR} (This can be skipped to use SRSI to reconfiugre some settings)"
 if ! confirm ; then
