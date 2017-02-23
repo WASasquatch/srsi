@@ -83,11 +83,8 @@ if [ ! ${dosudo} -gt 0 ] ; then
   echo -e "\r\033[K[ ${GRE}Done${NOR} ] Sudo Installed!\n"
 fi
 
-if [ git --version 2>/dev/null = 'git: command not found' ] ; then 
-  echo -e "${YEL}Git not found, installing...${NOR}"
-  srun 'apt-get --assume-yes install sudo &>/tmp/srsi/srsi.logs'
-  echo -e "\r\033[K[ ${GRE}Done${NOR} ] Git Installed!\n"
-fi
+srun 'apt-get --assume-yes install sudo &>/tmp/srsi/srsi.logs'
+echo -e "\r\033[K[ ${GRE}Done${NOR} ] Git Installed!\n"
 
 if [ ! "${auser}" = "root" ] ; then
   echo -e "${RED}Please run SRSI Installer as Root!{NOR}"
