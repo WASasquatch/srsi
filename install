@@ -145,7 +145,7 @@ fi
 echo -e "\n${YEL}What version of Spigot are you targeting? (No dash.)${NOR}\n"
 echo -e "${BOL}Example:${NOR}"
 echo -en $"${PMT}"
-echo $" - 1.10.2"
+echo $" - 1.11"
 echo $" - latest"
 echo -e "${NOR}"
 read -r -p "${1:-Spigot Version:} " spigotver
